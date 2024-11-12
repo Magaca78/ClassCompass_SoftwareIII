@@ -10,12 +10,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Mapa Interactivo',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: 'Mapa Interactivo'),
     );
   }
 }
@@ -30,42 +30,43 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  // Método para incrementar el contador
-  void _incrementCounter() {
+  List<Rect> squares = [
+    Rect.fromLTWH(187, 53, 110, 30), // Cuadrado 1
+    Rect.fromLTWH(187, 83, 110, 30), // Cuadrado 2
+  ];
+  // Método para agregar un cuadrado en la posición especificada
+  void _addSquare(Offset position) {
+    print('Agregando cuadrado en $position');
+    const double squareSize = 50; // Tamaño fijo del cuadrado
     setState(() {
-      _counter++;
+      squares.add(Rect.fromLTWH(
+        position.dx - squareSize / 2, // Centra el cuadrado en el punto de toque
+        position.dy - squareSize / 2,
+        squareSize,
+        squareSize,
+      ));
     });
+
+    print((position.dx - squareSize / 2).toString() + " " + 
+    (position.dy - squareSize / 2).toString() + " " + squareSize.toString());
   }
 
-  // Método para decrementar el contador
-  void _decrementCounter() {
-    setState(() {
-      if (_counter > 0) {
-        _counter--;
-      }
-    });
-  }
-
-  // Método para reiniciar el contador
-  void _resetCounter() {
-    setState(() {
-      _counter = 0;
-    });
-  }
-
-  // Método para generar un mensaje basado en el valor del contador
-  String _getMessage() {
-    if (_counter == 0) {
-      return "El contador está en cero.";
-    } else if (_counter > 10) {
-      return "¡Has alcanzado más de 10 clics!";
-    } else if (_counter > 5) {
-      return "¡Gran trabajo, sigue contando!";
-    } else {
-      return "Sigue contando...";
-    }
+  // Método para mostrar un mensaje al tocar el cuadrado
+  void _showMessage(BuildContext context, String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text("Cerrar"),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -76,46 +77,49 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
+        child: InteractiveViewer(
+          panEnabled: true,
+          minScale: 0.5,
+          maxScale: 3.0,
+          child: GestureDetector(
+            onTapDown: (details) {
+              // Captura la posición del toque en el área de la imagen
+              Offset localPosition = details.localPosition;
+              _addSquare(localPosition); // Agrega un cuadrado en la posición tocada
+            },
+            child: Stack(
+              children: [
+                Image.asset('assets/mapaPiso2.jpg'), // Imagen de fondo
+                ...squares.asMap().entries.map((entry) {
+                  int index = entry.key;
+                  Rect square = entry.value;
+
+                  return Positioned(
+                    left: square.left,
+                    top: square.top,
+                    width: square.width,
+                    height: square.height,
+                    child: GestureDetector(
+                      onTap: () {
+                        // Acción al tocar el cuadrado
+                        _showMessage(context, 'Cuadrado ${index + 1} tocado');
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.blue.withOpacity(0.3), // Color semitransparente
+                          border: Border.all(
+                            color: Colors.blue,
+                            width: 2,
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ],
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-            const SizedBox(height: 20),
-            // Mostrar mensaje dinámico según el valor del contador
-            Text(
-              _getMessage(),
-              style: Theme.of(context).textTheme.bodyLarge,
-            ),
-          ],
+          ),
         ),
-      ),
-      floatingActionButton: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          FloatingActionButton(
-            onPressed: _incrementCounter,
-            tooltip: 'Increment',
-            child: const Icon(Icons.add),
-          ),
-          const SizedBox(height: 10), // Espaciado entre los botones
-          FloatingActionButton(
-            onPressed: _decrementCounter,
-            tooltip: 'Decrement',
-            child: const Icon(Icons.remove),
-          ),
-          const SizedBox(height: 10), // Espaciado entre los botones
-          FloatingActionButton(
-            onPressed: _resetCounter,
-            tooltip: 'Reset',
-            child: const Icon(Icons.refresh),
-          ),
-        ],
       ),
     );
   }
