@@ -1,68 +1,22 @@
 import 'package:flutter/material.dart';
+import 'home_page.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Lista con Navegación',
+      title: 'Mapa Interactivo',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        useMaterial3: true,
       ),
-      home: ItemListScreen(),
-    );
-  }
-}
-
-class ItemListScreen extends StatelessWidget {
-  final List<String> items = List<String>.generate(20, (index) => 'Item $index');
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Lista de Items'),
-      ),
-      body: ListView.builder(
-        itemCount: items.length,
-        itemBuilder: (context, index) {
-          return ListTile(
-            title: Text(items[index]),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ItemDetailScreen(item: items[index]),
-                ),
-              );
-            },
-          );
-        },
-      ),
-    );
-  }
-}
-
-class ItemDetailScreen extends StatelessWidget {
-  final String item;
-
-  ItemDetailScreen({required this.item});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Detalles del $item'),
-      ),
-      body: Center(
-        child: Text(
-          'Seleccionaste $item',
-          style: TextStyle(fontSize: 24),
-        ),
-      ),
+      home: const MyHomePage(title: 'Mapa Interactivo'),
     );
   }
 }
