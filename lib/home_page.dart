@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'interactive_map.dart';
 import 'search_bar.dart' as custom_search;  
 import 'floor_selector.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -17,13 +18,31 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.blue,
-        title: const Text('ClassCompass'),
+        backgroundColor: const Color.fromARGB(255, 16, 115, 197),
+        title: Row(
+          children: [
+            Image.asset(
+              'assets/LogoUniversidadDeCaldas.png', // Ruta del logo
+              height: 50,        // Ajusta el tamaño
+            ),
+            const SizedBox(width: 10),
+            Text(
+              'ClassCompass',
+              style: GoogleFonts.lato(
+                textStyle: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.amber, // Color del texto
+                ),
+              ),
+            ),
+          ],
+        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.more_vert),
             onPressed: () {
-              // Acción adicional si es necesaria
+              // Acción adicional
             },
           ),
         ],

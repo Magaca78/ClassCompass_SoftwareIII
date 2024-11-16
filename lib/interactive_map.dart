@@ -12,6 +12,9 @@ class _InteractiveMapState extends State<InteractiveMap> {
     InfoRect(rect: Rect.fromLTWH(116, 81, 40, 30), info: 'Aula C209'),
     InfoRect(rect: Rect.fromLTWH(116, 108, 40, 48), info: 'Aula C208'),
     InfoRect(rect: Rect.fromLTWH(116, 156, 40, 30), info: 'Aula C207'),
+    InfoRect(rect: Rect.fromLTWH(116, 200, 40, 48), info: 'Aula C206'),
+    InfoRect(rect: Rect.fromLTWH(116, 250, 40, 30), info: 'Aula C205'),
+    InfoRect(rect: Rect.fromLTWH(116, 290, 40, 48), info: 'Aula C204'),
   ];
 
   String? selectedSquareId; // Variable para mantener el cuadrado seleccionado
