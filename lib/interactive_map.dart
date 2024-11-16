@@ -10,11 +10,15 @@ class _InteractiveMapState extends State<InteractiveMap> {
   final List<InfoRect> squares = [
     InfoRect(rect: Rect.fromLTWH(116, 51, 40, 30), info: 'Aula C210'),
     InfoRect(rect: Rect.fromLTWH(116, 81, 40, 30), info: 'Aula C209'),
-    InfoRect(rect: Rect.fromLTWH(116, 108, 40, 48), info: 'Aula C208'),
+    InfoRect(rect: Rect.fromLTWH(116, 109, 40, 48), info: 'Aula C208'),
     InfoRect(rect: Rect.fromLTWH(116, 156, 40, 30), info: 'Aula C207'),
-    InfoRect(rect: Rect.fromLTWH(116, 200, 40, 48), info: 'Aula C206'),
-    InfoRect(rect: Rect.fromLTWH(116, 250, 40, 30), info: 'Aula C205'),
-    InfoRect(rect: Rect.fromLTWH(116, 290, 40, 48), info: 'Aula C204'),
+    InfoRect(rect: Rect.fromLTWH(116, 186, 40, 48), info: 'Aula C206'),
+    InfoRect(rect: Rect.fromLTWH(116, 233, 40, 30), info: 'Aula C205'),
+    InfoRect(rect: Rect.fromLTWH(116, 262, 40, 48), info: 'Aula C204'),
+    InfoRect(rect: Rect.fromLTWH(116, 338, 40, 30), info: 'Aula C202'),
+    InfoRect(rect: Rect.fromLTWH(116, 309, 40, 30), info: 'Aula C203'),
+    InfoRect(rect: Rect.fromLTWH(116, 366, 50, 40), info: 'Aula C201'),
+    InfoRect(rect: Rect.fromLTWH(165, 366, 28, 40), info: 'Baños'),
   ];
 
   String? selectedSquareId; // Variable para mantener el cuadrado seleccionado
