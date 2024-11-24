@@ -64,6 +64,7 @@ flutter:
 
   assets:
     - assets/mapaPiso2.jpg
+    - assets/mapaPiso3.jpg
     - assets/LogoUniversidadDeCaldas.png
 
   # To add assets to your application, add an assets section, like this:

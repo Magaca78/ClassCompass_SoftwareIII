@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'interactive_map.dart';
-import 'search_bar.dart' as custom_search;  
+import 'search_bar.dart' as custom_search;
 import 'floor_selector.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -12,7 +12,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  String selectedFloor = "Segundo Piso";
+  String selectedFloor = "Segundo Piso"; // Piso seleccionado por defecto
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +23,7 @@ class _MyHomePageState extends State<MyHomePage> {
           children: [
             Image.asset(
               'assets/LogoUniversidadDeCaldas.png', // Ruta del logo
-              height: 50,        // Ajusta el tamaño
+              height: 50,
             ),
             const SizedBox(width: 10),
             Text(
@@ -32,7 +32,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 textStyle: const TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
-                  color: Colors.amber, // Color del texto
+                  color: Colors.amber,
                 ),
               ),
             ),
@@ -58,13 +58,13 @@ class _MyHomePageState extends State<MyHomePage> {
                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 10),
-                const custom_search.SearchBar(),  // Usando el alias
+                const custom_search.SearchBar(),
                 const SizedBox(height: 10),
                 FloorSelector(
                   selectedFloor: selectedFloor,
                   onFloorSelected: (floor) {
                     setState(() {
-                      selectedFloor = floor;
+                      selectedFloor = floor; // Cambia el piso seleccionado
                     });
                   },
                 ),
@@ -72,7 +72,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ),
           Expanded(
-            child: InteractiveMap(),
+            child: InteractiveMap(floor: selectedFloor), // Pasa el piso al mapa
           ),
         ],
       ),

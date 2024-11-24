@@ -1,59 +1,36 @@
 import 'package:flutter/material.dart';
 import 'info_rect.dart';
 
-class InteractiveMap extends StatefulWidget {
-  @override
-  _InteractiveMapState createState() => _InteractiveMapState();
-}
+class InteractiveMap extends StatelessWidget {
+  final String floor; // Parámetro para indicar el piso seleccionado
 
-class _InteractiveMapState extends State<InteractiveMap> {
+  InteractiveMap({required this.floor, super.key});
+
+  // Lista de aulas (puedes ajustarla según el piso)
   final List<InfoRect> squares = [
     InfoRect(rect: Rect.fromLTWH(116, 51, 40, 30), info: 'Aula C210'),
     InfoRect(rect: Rect.fromLTWH(116, 81, 40, 30), info: 'Aula C209'),
     InfoRect(rect: Rect.fromLTWH(116, 109, 40, 48), info: 'Aula C208'),
     InfoRect(rect: Rect.fromLTWH(116, 156, 40, 30), info: 'Aula C207'),
-    InfoRect(rect: Rect.fromLTWH(116, 186, 40, 48), info: 'Aula C206'),
-    InfoRect(rect: Rect.fromLTWH(116, 233, 40, 30), info: 'Aula C205'),
-    InfoRect(rect: Rect.fromLTWH(116, 262, 40, 48), info: 'Aula C204'),
-    InfoRect(rect: Rect.fromLTWH(116, 338, 40, 30), info: 'Aula C202'),
-    InfoRect(rect: Rect.fromLTWH(116, 309, 40, 30), info: 'Aula C203'),
-    InfoRect(rect: Rect.fromLTWH(116, 366, 50, 40), info: 'Aula C201'),
-    InfoRect(rect: Rect.fromLTWH(165, 366, 28, 40), info: 'Baños'),
   ];
-
-  String? selectedSquareId; // Variable para mantener el cuadrado seleccionado
-
-  void _showMessage(BuildContext context, String message) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Información del Aula'),
-          content: Text(message),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text("Cerrar"),
-            ),
-          ],
-        );
-      },
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
+    // Selección dinámica de la imagen según el piso
+    final String floorImage = floor == "Segundo Piso"
+        ? 'assets/mapaPiso2.jpg'
+        : 'assets/mapaPiso3.jpg';
+
     return InteractiveViewer(
       panEnabled: true,
       minScale: 0.5,
       maxScale: 3.0,
       child: Stack(
         children: [
-          Image.asset('assets/mapaPiso2.jpg'), // Imagen de fondo
+          // Muestra la imagen correspondiente al piso
+          Image.asset(floorImage), 
           ...squares.map((infoRect) {
             Rect square = infoRect.rect;
-            bool isSelected = selectedSquareId == infoRect.info; // Verifica si el cuadrado está seleccionado
-
             return Positioned(
               left: square.left,
               top: square.top,
@@ -61,38 +38,28 @@ class _InteractiveMapState extends State<InteractiveMap> {
               height: square.height,
               child: GestureDetector(
                 onTap: () {
-                  setState(() {
-                    // Cambiar la selección del cuadrado
-                    selectedSquareId = isSelected ? null : infoRect.info; // Desmarcar si ya está seleccionado
-                    _showMessage(context, infoRect.info);
-                  });
-                },
-                child: Draggable(
-                  data: infoRect.info,
-                  feedback: Container(
-                    width: square.width,
-                    height: square.height,
-                    color: Colors.transparent,
-                    child: Material(
-                      color: Colors.transparent,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Colors.blue,
-                            width: 2,
+                  // Mostrar información del aula (puedes expandir esta funcionalidad)
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: Text('Información del Aula'),
+                        content: Text(infoRect.info),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.of(context).pop(),
+                            child: const Text("Cerrar"),
                           ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  childWhenDragging: Container(), // Se puede definir un widget cuando se arrastra
-                  child: Container(
-                    decoration: BoxDecoration(
+                        ],
+                      );
+                    },
+                  );
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(
                       color: Colors.transparent,
-                      border: Border.all(
-                        color: isSelected ? Colors.red : Colors.transparent, // Resalta el borde si está seleccionado
-                        width: 2,
-                      ),
+                      width: 2,
                     ),
                   ),
                 ),
