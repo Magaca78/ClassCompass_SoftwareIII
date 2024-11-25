@@ -18,8 +18,17 @@ class _InteractiveMapState extends State<InteractiveMap> {
 
   final Map<String, List<InfoRect>> floorRectangles = {
     "Segundo Piso": [
-      InfoRect(rect: Rect.fromLTWH(0.4, 0.105, 0.1, 0.075), info: 'Aula C210'),
-      InfoRect(rect: Rect.fromLTWH(0.3, 0.2, 0.2, 0.1), info: 'Aula C209'),
+      InfoRect(rect: Rect.fromLTWH(0.387, 0.1243, 0.1245, 0.0655), info: 'Aula C210'),
+      InfoRect(rect: Rect.fromLTWH(0.387, 0.187, 0.1245, 0.0655), info: 'Aula C209'),
+      InfoRect(rect: Rect.fromLTWH(0.387, 0.252, 0.1245, 0.112), info: 'Aula C208'),
+      InfoRect(rect: Rect.fromLTWH(0.387, 0.363, 0.1245, 0.0655), info: 'Aula C207'),
+      InfoRect(rect: Rect.fromLTWH(0.387, 0.428, 0.1245, 0.108), info: 'Aula C206'),
+      InfoRect(rect: Rect.fromLTWH(0.387, 0.534, 0.1245, 0.0655), info: 'Aula C205'),
+      InfoRect(rect: Rect.fromLTWH(0.387, 0.598, 0.1245, 0.108), info: 'Aula C204'),
+      InfoRect(rect: Rect.fromLTWH(0.387, 0.704, 0.1245, 0.0655), info: 'Aula C203'),
+      InfoRect(rect: Rect.fromLTWH(0.387, 0.769, 0.1245, 0.0655), info: 'Aula C202'),
+      InfoRect(rect: Rect.fromLTWH(0.387, 0.833, 0.157, 0.0865), info: 'Aula C201'),
+      InfoRect(rect: Rect.fromLTWH(0.543, 0.833, 0.088, 0.0865), info: 'Baños Piso 2'),
     ],
     "Tercer Piso": [
       InfoRect(rect: Rect.fromLTWH(0.2, 0.3, 0.2, 0.1), info: 'Aula C310'),
@@ -92,8 +101,8 @@ class _InteractiveMapState extends State<InteractiveMap> {
         double maxWidth = 1200;
         double maxHeight = 800;
 
-        double imageDisplayWidth = imageWidth! * scale;
-        double imageDisplayHeight = imageHeight! * scale;
+        double imageDisplayWidth = (imageWidth! * scale).toDouble();
+        double imageDisplayHeight = (imageHeight! * scale).toDouble();
 
         if (imageDisplayWidth > maxWidth) imageDisplayWidth = maxWidth;
         if (imageDisplayHeight > maxHeight) imageDisplayHeight = maxHeight;
@@ -139,8 +148,8 @@ class _InteractiveMapState extends State<InteractiveMap> {
                       decoration: BoxDecoration(
                         color: Colors.transparent,
                         border: selectedRects.contains(infoRect)
-                            ? Border.all(color: Colors.green, width: 2)
-                            : Border.all(color: Colors.red, width: 2),
+                            ? Border.all(color: Colors.green, width: 1)
+                            : Border.all(color: Colors.red, width: 1),
                       ),
                     ),
                   ),
