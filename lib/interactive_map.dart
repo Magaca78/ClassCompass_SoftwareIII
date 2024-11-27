@@ -4,11 +4,13 @@ import 'info_rect.dart';
 class InteractiveMap extends StatefulWidget {
   final String floor;
   final String searchQuery;
+  final ValueChanged<String> onFloorChanged;
 
   const InteractiveMap({
     Key? key,
     required this.floor,
     required this.searchQuery,
+    required this.onFloorChanged,
   }) : super(key: key);
 
   @override
@@ -93,6 +95,23 @@ class _InteractiveMapState extends State<InteractiveMap> {
         filteredRects = allRects
             .where((rect) => rect.info.toLowerCase().contains(query.toLowerCase()))
             .toList();
+        if (filteredRects.isEmpty) {
+          // Buscar en otros pisos
+          for (String floor in floorRectangles.keys) {
+            if (floor != widget.floor) {
+              final List<InfoRect> otherFloorRects = floorRectangles[floor] ?? [];
+              final List<InfoRect> foundRects = otherFloorRects
+                  .where((rect) => rect.info.toLowerCase().contains(query.toLowerCase()))
+                  .toList();
+              if (foundRects.isNotEmpty) {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  widget.onFloorChanged(floor);
+                });
+                break;
+              }
+            }
+          }
+        }
       }
     });
   }

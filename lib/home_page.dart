@@ -84,6 +84,13 @@ class _MyHomePageState extends State<MyHomePage> {
             child: InteractiveMap(
               floor: selectedFloor,
               searchQuery: searchQuery, // Pasa la búsqueda al mapa
+              onFloorChanged: (floor) {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  setState(() {
+                    selectedFloor = floor; // Cambia el piso seleccionado
+                  });
+                });
+              },
             ),
           ),
         ],
