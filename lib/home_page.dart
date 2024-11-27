@@ -12,7 +12,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  String selectedFloor = "Segundo Piso"; // Piso seleccionado por defecto
+  String selectedFloor = "Segundo Piso"; 
+  String searchQuery = ""; 
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +23,7 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Row(
           children: [
             Image.asset(
-              'assets/LogoUniversidadDeCaldas.png', // Ruta del logo
+              'assets/LogoUniversidadDeCaldas.png',
               height: 50,
             ),
             const SizedBox(width: 10),
@@ -42,7 +43,7 @@ class _MyHomePageState extends State<MyHomePage> {
           IconButton(
             icon: const Icon(Icons.more_vert),
             onPressed: () {
-              // Acción adicional
+             
             },
           ),
         ],
@@ -58,8 +59,16 @@ class _MyHomePageState extends State<MyHomePage> {
                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 10),
-                const custom_search.SearchBar(),
+                // Barra de búsqueda
+                custom_search.Search(
+                  onSearchChanged: (query) {
+                    setState(() {
+                      searchQuery = query; // Actualiza el texto de búsqueda
+                    });
+                  },
+                ),
                 const SizedBox(height: 10),
+                // Selector de pisos
                 FloorSelector(
                   selectedFloor: selectedFloor,
                   onFloorSelected: (floor) {
@@ -72,7 +81,10 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ),
           Expanded(
-            child: InteractiveMap(floor: selectedFloor), // Pasa el piso al mapa
+            child: InteractiveMap(
+              floor: selectedFloor,
+              searchQuery: searchQuery, // Pasa la búsqueda al mapa
+            ),
           ),
         ],
       ),
