@@ -12,7 +12,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  String selectedFloor = "Segundo Piso"; 
+  String selectedFloor = "Tercer Piso"; 
   String searchQuery = ""; 
 
   @override
