@@ -8,7 +8,7 @@ class FloorSelector extends StatelessWidget {
     super.key,
     required this.selectedFloor,
     required this.onFloorSelected,
-  });
+  }): super(key: key ?? const Key('floor-selector'));
 
   @override
   Widget build(BuildContext context) {

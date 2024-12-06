@@ -73,18 +73,27 @@ class _InteractiveMapState extends State<InteractiveMap> {
   }
 
   void _loadImageDimensions() {
-    final String imagePath = floorImages[widget.floor] ?? floorImages.values.first;
-    final Image image = Image.asset(imagePath);
+  final String imagePath = floorImages[widget.floor] ?? floorImages.values.first;
+  final Image image = Image.asset(imagePath);
 
-    image.image.resolve(const ImageConfiguration()).addListener(
-      ImageStreamListener((ImageInfo info, bool _) {
+  image.image.resolve(const ImageConfiguration()).addListener(
+    ImageStreamListener(
+      (ImageInfo info, bool _) {
         setState(() {
           imageWidth = info.image.width.toDouble();
           imageHeight = info.image.height.toDouble();
         });
-      }),
-    );
-  }
+      },
+      onError: (dynamic exception, StackTrace? stackTrace) {
+        debugPrint('Error cargando imagen: $exception');
+        setState(() {
+          imageWidth = 800.0;  // Valor por defecto
+          imageHeight = 600.0;
+        });
+      },
+    ),
+  );
+}
 
   void _filterAulas(String query) {
     final List<InfoRect> allRects = floorRectangles[widget.floor] ?? [];
