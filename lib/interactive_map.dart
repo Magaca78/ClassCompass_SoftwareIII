@@ -24,6 +24,7 @@ class _InteractiveMapState extends State<InteractiveMap> {
     "Segundo Piso": "assets/mapaPiso2.jpg",
     "Tercer Piso": "assets/mapaPiso3.jpg",
   };
+  final Set<InfoRect> highlightedRects = {}; // Rastrear rectángulos resaltados
 
   final Map<String, List<InfoRect>> floorRectangles = {
     "Segundo Piso": [
@@ -140,12 +141,10 @@ class _InteractiveMapState extends State<InteractiveMap> {
           return const Center(child: CircularProgressIndicator());
         }
 
-        // Escala de la imagen
         double scaleX = screenWidth / imageWidth!;
         double scaleY = screenHeight / imageHeight!;
         double scale = (scaleX < scaleY) ? scaleX : scaleY;
 
-        // Tamaño final de la imagen
         double imageDisplayWidth = imageWidth! * scale;
         double imageDisplayHeight = imageHeight! * scale;
 
@@ -171,12 +170,25 @@ class _InteractiveMapState extends State<InteractiveMap> {
                   height: infoRect.rect.height * imageDisplayHeight,
                   child: GestureDetector(
                     onTap: () {
+                      setState(() {
+                        if (!highlightedRects.contains(infoRect)) {
+                          highlightedRects.clear(); // Solo permite un resaltado a la vez
+                          highlightedRects.add(infoRect);
+                        } else {
+                          highlightedRects.remove(infoRect);
+                        }
+                      });
                       _showMessage(context, infoRect.info);
                     },
                     child: Container(
                       decoration: BoxDecoration(
                         color: Colors.transparent,
-                        border: Border.all(color: Colors.red, width: 1),
+                        border: Border.all(
+                          color: highlightedRects.contains(infoRect)
+                              ? Colors.red // Mostrar rojo si está resaltado
+                              : Colors.transparent, // Sin borde si no está resaltado
+                          width: 1,
+                        ),
                       ),
                     ),
                   ),
@@ -188,6 +200,8 @@ class _InteractiveMapState extends State<InteractiveMap> {
       },
     );
   }
+
+
 
   
   void _showMessage(BuildContext context, String aulaName) async {
