@@ -9,11 +9,11 @@ class InteractiveMap extends StatefulWidget {
   final ValueChanged<String> onFloorChanged;
 
   const InteractiveMap({
-    Key? key,
+    super.key,
     required this.floor,
     required this.searchQuery,
     required this.onFloorChanged,
-  }) : super(key: key);
+  });
 
   @override
   _InteractiveMapState createState() => _InteractiveMapState();
@@ -181,7 +181,7 @@ class _InteractiveMapState extends State<InteractiveMap> {
                     ),
                   ),
                 );
-              }).toList(),
+              }),
             ],
           ),
         );
