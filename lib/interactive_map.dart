@@ -212,9 +212,7 @@ class _InteractiveMapState extends State<InteractiveMap> {
             return AlertDialog(
               title: Text('Información del Aula ${aulaInfo['name']}'),
               content: Text(
-                'Piso: ${aulaInfo['floorId']}\n'
-                'Piso BNaf: ${aulaInfo['floorName']}\n'
-                'Clasificación: ${aulaInfo['classificationId']}\n'
+                'Piso: ${aulaInfo['floorName']}\n'
                 'Clasificación: ${aulaInfo['classificationName']}',
               ),
               actions: [
