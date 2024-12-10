@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'info_rect.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class InteractiveMap extends StatefulWidget {
   final String floor;
@@ -25,25 +27,25 @@ class _InteractiveMapState extends State<InteractiveMap> {
 
   final Map<String, List<InfoRect>> floorRectangles = {
     "Segundo Piso": [
-      InfoRect(rect: Rect.fromLTWH(0.376, 0.119, 0.1245, 0.0655), info: 'Aula C210'),
+      InfoRect(rect: Rect.fromLTWH(0.376, 0.119, 0.1245, 0.0655), info: 'Aula C210 - Auditorio Roberto Vélez'),
       InfoRect(rect: Rect.fromLTWH(0.376, 0.182, 0.1245, 0.067), info: 'Aula C209'),
       InfoRect(rect: Rect.fromLTWH(0.376, 0.248, 0.1245, 0.112), info: 'Aula C208'),
       InfoRect(rect: Rect.fromLTWH(0.376, 0.358, 0.1245, 0.0655), info: 'Aula C207'),
       InfoRect(rect: Rect.fromLTWH(0.376, 0.423, 0.1245, 0.11), info: 'Aula C206'),
-      InfoRect(rect: Rect.fromLTWH(0.376, 0.531, 0.1245, 0.0665), info: 'Aula C205'),
+      InfoRect(rect: Rect.fromLTWH(0.376, 0.531, 0.1245, 0.0665), info: 'Aula C205 - Laboratorio de Geografía Aplicada'),
       InfoRect(rect: Rect.fromLTWH(0.376, 0.595, 0.1245, 0.113), info: 'Aula C204'),
       InfoRect(rect: Rect.fromLTWH(0.376, 0.706, 0.1245, 0.0655), info: 'Aula C203'),
       InfoRect(rect: Rect.fromLTWH(0.376, 0.769, 0.1245, 0.068), info: 'Aula C202'),
-      InfoRect(rect: Rect.fromLTWH(0.376, 0.835, 0.158, 0.089), info: 'Aula C201'),
+      InfoRect(rect: Rect.fromLTWH(0.376, 0.835, 0.158, 0.089), info: 'Aula C201 - Auditorio Danilo Cruz'),
       InfoRect(rect: Rect.fromLTWH(0.533, 0.835, 0.091, 0.089), info: 'Baños Piso 2'),
     ],
     "Tercer Piso": [
-      InfoRect(rect: Rect.fromLTWH(0.376, 0.074, 0.187, 0.0455), info: 'Aula C311'),
-      InfoRect(rect: Rect.fromLTWH(0.376, 0.119, 0.1245, 0.0655), info: 'Aula C310'),
-      InfoRect(rect: Rect.fromLTWH(0.376, 0.182, 0.1245, 0.067), info: 'Aula C309'),
-      InfoRect(rect: Rect.fromLTWH(0.376, 0.248, 0.1245, 0.089), info: 'Aula C308'),
-      InfoRect(rect: Rect.fromLTWH(0.376, 0.335, 0.1245, 0.067), info: 'Aula C307'),
-      InfoRect(rect: Rect.fromLTWH(0.376, 0.4, 0.1245, 0.089), info: 'Aula C306'),
+      InfoRect(rect: Rect.fromLTWH(0.376, 0.074, 0.187, 0.0455), info: 'Aula C311 - Gustavo Villa Carmona'),
+      InfoRect(rect: Rect.fromLTWH(0.376, 0.119, 0.1245, 0.0655), info: 'Aula C310 - Media Lab L'),
+      InfoRect(rect: Rect.fromLTWH(0.376, 0.182, 0.1245, 0.067), info: 'Aula C309 - Escenarios Digitales Transmedia'),
+      InfoRect(rect: Rect.fromLTWH(0.376, 0.248, 0.1245, 0.089), info: 'Aula C308 - Sala Multimedia'),
+      InfoRect(rect: Rect.fromLTWH(0.376, 0.335, 0.1245, 0.067), info: 'Aula C307 - Laboratorio AudioVisual'),
+      InfoRect(rect: Rect.fromLTWH(0.376, 0.4, 0.1245, 0.089), info: 'Aula C306 - Centro de Documentación'),
       InfoRect(rect: Rect.fromLTWH(0.376, 0.488, 0.1245, 0.0665), info: 'Sala K'),
       InfoRect(rect: Rect.fromLTWH(0.376, 0.553, 0.1245, 0.11), info: 'Sala J'),
       InfoRect(rect: Rect.fromLTWH(0.376, 0.662, 0.1245, 0.11), info: 'Sala I'),
@@ -187,12 +189,59 @@ class _InteractiveMapState extends State<InteractiveMap> {
     );
   }
 
-  void _showMessage(BuildContext context, String message) {
+  
+  void _showMessage(BuildContext context, String aulaName) async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return const Center(child: CircularProgressIndicator());
+      },
+    );
+
+    try {
+      final response = await http.get(Uri.parse('http://localhost:3000/api/classrooms/$aulaName'));
+
+      if (response.statusCode == 200) {
+        final aulaInfo = jsonDecode(response.body);
+
+        Navigator.of(context).pop(); // Cerrar el indicador de carga
+
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Información del Aula ${aulaInfo['name']}'),
+              content: Text(
+                'Piso: ${aulaInfo['floorId']}\n'
+                'Piso BNaf: ${aulaInfo['floorName']}\n'
+                'Clasificación: ${aulaInfo['classificationId']}\n'
+                'Clasificación: ${aulaInfo['classificationName']}',
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text("Cerrar"),
+                ),
+              ],
+            );
+          },
+        );
+      } else {
+        Navigator.of(context).pop(); // Cerrar el indicador de carga
+        _showErrorDialog(context, 'Error al cargar la información del aula.');
+      }
+    } catch (e) {
+      Navigator.of(context).pop(); // Cerrar el indicador de carga
+      _showErrorDialog(context, 'Error de red: $e');
+    }
+  }
+
+  void _showErrorDialog(BuildContext context, String message) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Información del Aula'),
+          title: const Text('Error'),
           content: Text(message),
           actions: [
             TextButton(

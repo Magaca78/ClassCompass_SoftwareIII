@@ -3,6 +3,8 @@ import 'interactive_map.dart';
 import 'search_bar.dart' as custom_search;
 import 'floor_selector.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -14,6 +16,28 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   String selectedFloor = "Tercer Piso"; 
   String searchQuery = ""; 
+  List<dynamic> classrooms = [];  // Lista de aulas
+
+  // Función para obtener la información de las aulas desde el backend
+  Future<void> fetchClassrooms() async {
+    final response = await http.get(Uri.parse('http://localhost:3000/api/classrooms'));
+
+    if (response.statusCode == 200) {
+      setState(() {
+        classrooms = jsonDecode(response.body);  // Asocia las aulas a la lista
+      });
+    } else {
+      setState(() {
+        classrooms = [];  // En caso de error, muestra lista vacía
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchClassrooms();  // Obtener las aulas al inicio
+  }
 
   @override
   Widget build(BuildContext context) {

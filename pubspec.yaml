@@ -11,6 +11,8 @@ dependencies:
   flutter:
     sdk: flutter
 
+  http: ^1.2.2
+
   google_fonts: ^6.2.1  # Actualizado a la última versión
   cupertino_icons: ^1.0.8
 
