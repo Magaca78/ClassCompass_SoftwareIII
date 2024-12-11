@@ -24,7 +24,6 @@ class _InteractiveMapState extends State<InteractiveMap> {
     "Segundo Piso": "assets/mapaPiso2.jpg",
     "Tercer Piso": "assets/mapaPiso3.jpg",
   };
-  final Set<InfoRect> highlightedRects = {}; // Rastrear rectángulos resaltados
 
   final Map<String, List<InfoRect>> floorRectangles = {
     "Segundo Piso": [
@@ -102,19 +101,27 @@ class _InteractiveMapState extends State<InteractiveMap> {
     final List<InfoRect> allRects = floorRectangles[widget.floor] ?? [];
     setState(() {
       if (query.isEmpty) {
-        filteredRects = allRects;
+        // Reinicia los estilos si no hay búsqueda
+        filteredRects = allRects.map((rect) {
+          rect.isHighlighted = false; // No destacar
+          return rect;
+        }).toList();
       } else {
-        filteredRects = allRects
-            .where((rect) => rect.info.toLowerCase().contains(query.toLowerCase()))
-            .toList();
-        if (filteredRects.isEmpty) {
-          // Buscar en otros pisos
+        // Filtrar los rectángulos que coincidan con el término de búsqueda
+        filteredRects = allRects.map((rect) {
+          rect.isHighlighted = rect.info.toLowerCase().contains(query.toLowerCase());
+          return rect;
+        }).toList();
+
+        if (filteredRects.every((rect) => !rect.isHighlighted)) {
+          // Si no se encontraron resultados, busca en otros pisos
           for (String floor in floorRectangles.keys) {
             if (floor != widget.floor) {
               final List<InfoRect> otherFloorRects = floorRectangles[floor] ?? [];
-              final List<InfoRect> foundRects = otherFloorRects
-                  .where((rect) => rect.info.toLowerCase().contains(query.toLowerCase()))
-                  .toList();
+              final List<InfoRect> foundRects = otherFloorRects.where(
+                (rect) => rect.info.toLowerCase().contains(query.toLowerCase()),
+              ).toList();
+
               if (foundRects.isNotEmpty) {
                 WidgetsBinding.instance.addPostFrameCallback((_) {
                   widget.onFloorChanged(floor);
@@ -127,6 +134,7 @@ class _InteractiveMapState extends State<InteractiveMap> {
       }
     });
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -141,10 +149,12 @@ class _InteractiveMapState extends State<InteractiveMap> {
           return const Center(child: CircularProgressIndicator());
         }
 
+        // Escala de la imagen
         double scaleX = screenWidth / imageWidth!;
         double scaleY = screenHeight / imageHeight!;
         double scale = (scaleX < scaleY) ? scaleX : scaleY;
 
+        // Tamaño final de la imagen
         double imageDisplayWidth = imageWidth! * scale;
         double imageDisplayHeight = imageHeight! * scale;
 
@@ -170,37 +180,26 @@ class _InteractiveMapState extends State<InteractiveMap> {
                   height: infoRect.rect.height * imageDisplayHeight,
                   child: GestureDetector(
                     onTap: () {
-                      setState(() {
-                        if (!highlightedRects.contains(infoRect)) {
-                          highlightedRects.clear(); // Solo permite un resaltado a la vez
-                          highlightedRects.add(infoRect);
-                        } else {
-                          highlightedRects.remove(infoRect);
-                        }
-                      });
                       _showMessage(context, infoRect.info);
                     },
                     child: Container(
                       decoration: BoxDecoration(
                         color: Colors.transparent,
                         border: Border.all(
-                          color: highlightedRects.contains(infoRect)
-                              ? Colors.red // Mostrar rojo si está resaltado
-                              : Colors.transparent, // Sin borde si no está resaltado
-                          width: 1,
+                          color: infoRect.isHighlighted ? Colors.red : Colors.transparent, // Borde rojo si está destacado
+                          width: infoRect.isHighlighted ? 2 : 0, // Grosor del borde rojo
                         ),
                       ),
                     ),
                   ),
                 );
-              }),
+              }).toList(),
             ],
           ),
         );
       },
     );
   }
-
 
 
   
